@@ -144,40 +144,51 @@ def tag_best_model_run(run_ids: dict, results: dict, metric_key: str = 'F1-Score
     return best_model_name
 
 
-def register_best_model(
+def register_models(
     run_ids: dict,
     results: dict,
     registered_model_name: str = 'hand-gesture-classifier',
     metric_key: str = 'F1-Score',
 ) -> str:
-    """Register the best model in the MLflow Model Registry, alias it 'champion', return version."""
+    """Register all models in the MLflow Model Registry.
+
+    Best model gets the 'champion' alias; all others get 'archived'.
+    Returns the version string of the champion model.
+    """
     best_model_name = max(results, key=lambda n: results[n][metric_key])
-    best_run_id = run_ids[best_model_name]
-
-    artifact_path = (
-        best_model_name.replace(' ', '_').replace('(', '').replace(')', '').replace('=', '')
-    )
-    model_uri = f'runs:/{best_run_id}/{artifact_path}'
-
-    mv = mlflow.register_model(model_uri=model_uri, name=registered_model_name)
-
     client = MlflowClient()
-    client.set_registered_model_alias(registered_model_name, 'champion', mv.version)
 
-    f1 = results[best_model_name][metric_key]
-    client.update_model_version(
-        name=registered_model_name,
-        version=mv.version,
-        description=(
-            f'Best model: {best_model_name}. '
-            f'{metric_key}: {f1:.4f}. '
-            f'Experiment: hand-gesture-classification.'
-        ),
-    )
+    champion_version = None
+    for model_name, run_id in run_ids.items():
+        artifact_path = (
+            model_name.replace(' ', '_').replace('(', '').replace(')', '').replace('=', '')
+        )
+        model_uri = f'runs:/{run_id}/{artifact_path}'
 
-    print(f'  Registered "{registered_model_name}" v{mv.version} '
-          f'(alias: champion) ← {best_model_name}')
-    return mv.version
+        mv = mlflow.register_model(model_uri=model_uri, name=registered_model_name)
+
+        f1 = results[model_name][metric_key]
+        if model_name == best_model_name:
+            alias = 'champion'
+            champion_version = mv.version
+        else:
+            alias = 'archived'
+
+        client.set_registered_model_alias(registered_model_name, alias, mv.version)
+        client.update_model_version(
+            name=registered_model_name,
+            version=mv.version,
+            description=(
+                f'Model: {model_name}. '
+                f'{metric_key}: {f1:.4f}. '
+                f'Experiment: hand-gesture-classification.'
+            ),
+        )
+
+        print(f'  Registered "{registered_model_name}" v{mv.version} '
+              f'(alias: {alias}) ← {model_name}')
+
+    return champion_version
 
 def run_mlflow_tracking(
     models: dict,
@@ -219,7 +230,7 @@ def run_mlflow_tracking(
     
     tag_best_model_run(run_ids, results)
     log_comparison_chart(results, run_ids, best_model_name)
-    register_best_model(run_ids, results)
+    register_models(run_ids, results)
 
 
     return run_ids
