@@ -17,8 +17,6 @@ A machine learning pipeline that classifies **18 hand gestures** from 21 MediaPi
 **18 Gesture Classes:**
 `call` · `dislike` · `fist` · `four` · `like` · `mute` · `ok` · `one` · `palm` · `peace` · `peace_inverted` · `rock` · `stop` · `stop_inverted` · `three` · `three2` · `two_up` · `two_up_inverted`
 
-The dataset is roughly balanced (~945–1,653 samples per class).
-
 ---
 
 ## Pipeline
@@ -100,7 +98,7 @@ Hand_Gesture/
 
 ```bash
 # Clone and install dependencies
-git clone <repo-url>
+git clone https://github.com/OmarGamal488/hand-gesture-recognition.git
 cd Hand_Gesture
 uv sync
 ```
@@ -126,7 +124,7 @@ This will:
 
 ### Real-time webcam inference
 
-Run **Section 7b** in the notebook. Requires a connected webcam.
+Run **Section 7** in the notebook. Requires a connected webcam.
 
 ```
 Press Q in the video window to quit.
