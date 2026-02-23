@@ -26,7 +26,8 @@ A machine learning pipeline that classifies **18 hand gestures** from 21 MediaPi
 3. **Split** — 80% train / 20% test (stratified)
 4. **Train** — 4 models, each wrapped in a `StandardScaler → Classifier` pipeline
 5. **Evaluate** — Compare accuracy, precision, recall, F1 on the test set
-6. **Deploy** — Save best model; run live inference via webcam or video file
+6. **Track** — Log all runs, metrics, params, and artifacts to MLflow; register best model
+7. **Deploy** — Save best model; run live inference via webcam or video file
 
 ---
 
@@ -77,11 +78,41 @@ Per-class F1-scores on the test set:
 
 ---
 
+## MLflow Experiment Tracking
+
+All 4 model runs are logged to the `hand-gesture-classification` experiment using `mlflow_utils.py`.
+
+Each run records:
+- **Params** — classifier type, scaler, and all hyperparameters
+- **Metrics** — accuracy, precision, recall, F1-score
+- **Artifacts** — dataset summary CSV, model files, comparison chart
+- **Tags** — `model_name`, `best_model`
+
+The best model (Random Forest) is automatically registered in the **MLflow Model Registry** as `hand-gesture-classifier` with the alias `champion`.
+
+### Launch the MLflow UI
+
+```bash
+uv run mlflow ui
+```
+
+Then open `http://127.0.0.1:5000`.
+
+### Load the registered model
+
+```python
+import mlflow.sklearn
+model = mlflow.sklearn.load_model("models:/hand-gesture-classifier@champion")
+```
+
+---
+
 ## Project Structure
 
 ```
 Hand_Gesture/
 ├── hand_gesture_classification.ipynb   # Main notebook (full pipeline)
+├── mlflow_utils.py                     # MLflow tracking & registry helpers
 ├── hand_landmarks_data.csv             # Dataset (63 features + label)
 ├── best_gesture_model.pkl              # Saved Random Forest pipeline
 ├── label_encoder.pkl                   # Saved LabelEncoder
@@ -120,7 +151,8 @@ This will:
 2. Normalize landmarks
 3. Train all 4 models
 4. Evaluate and compare them
-5. Save `best_gesture_model.pkl` and `label_encoder.pkl`
+5. Log all runs to MLflow and register the best model
+6. Save `best_gesture_model.pkl` and `label_encoder.pkl`
 
 ### Real-time webcam inference
 

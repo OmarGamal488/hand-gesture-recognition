@@ -132,6 +132,53 @@ def log_comparison_chart(results: dict, run_ids: dict, best_model_name: str) -> 
         os.unlink(tmp.name)
 
 
+def tag_best_model_run(run_ids: dict, results: dict, metric_key: str = 'F1-Score') -> str:
+    """Tag best_model=True/False on all completed runs; return best model name."""
+    best_model_name = max(results, key=lambda n: results[n][metric_key])
+
+    client = MlflowClient()
+    for model_name, run_id in run_ids.items():
+        client.set_tag(run_id, 'best_model', str(model_name == best_model_name))
+        client.set_tag(run_id, 'model_name', model_name)
+
+    return best_model_name
+
+
+def register_best_model(
+    run_ids: dict,
+    results: dict,
+    registered_model_name: str = 'hand-gesture-classifier',
+    metric_key: str = 'F1-Score',
+) -> str:
+    """Register the best model in the MLflow Model Registry, alias it 'champion', return version."""
+    best_model_name = max(results, key=lambda n: results[n][metric_key])
+    best_run_id = run_ids[best_model_name]
+
+    artifact_path = (
+        best_model_name.replace(' ', '_').replace('(', '').replace(')', '').replace('=', '')
+    )
+    model_uri = f'runs:/{best_run_id}/{artifact_path}'
+
+    mv = mlflow.register_model(model_uri=model_uri, name=registered_model_name)
+
+    client = MlflowClient()
+    client.set_registered_model_alias(registered_model_name, 'champion', mv.version)
+
+    f1 = results[best_model_name][metric_key]
+    client.update_model_version(
+        name=registered_model_name,
+        version=mv.version,
+        description=(
+            f'Best model: {best_model_name}. '
+            f'{metric_key}: {f1:.4f}. '
+            f'Experiment: hand-gesture-classification.'
+        ),
+    )
+
+    print(f'  Registered "{registered_model_name}" v{mv.version} '
+          f'(alias: champion) ← {best_model_name}')
+    return mv.version
+
 def run_mlflow_tracking(
     models: dict,
     results: dict,
@@ -169,6 +216,10 @@ def run_mlflow_tracking(
         run_ids[model_name] = run_id
         print(f'  Logged {model_name}: {run_id}')
 
+    
+    tag_best_model_run(run_ids, results)
     log_comparison_chart(results, run_ids, best_model_name)
+    register_best_model(run_ids, results)
+
 
     return run_ids
