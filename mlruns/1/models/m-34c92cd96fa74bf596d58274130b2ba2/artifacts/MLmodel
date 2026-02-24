@@ -1,4 +1,4 @@
-artifact_path: /home/omargamalelkady/projects/Hand_Gesture/mlruns/1/models/m-a32576d8089a423581a8c883c10f6891/artifacts
+artifact_path: /home/omargamalelkady/projects/Hand_Gesture/mlruns/1/models/m-34c92cd96fa74bf596d58274130b2ba2/artifacts
 flavors:
   python_function:
     env:
@@ -16,11 +16,11 @@ flavors:
     skops_trusted_types: null
 is_signature_from_type_hint: false
 mlflow_version: 3.10.0
-model_id: m-a32576d8089a423581a8c883c10f6891
-model_size_bytes: 1184953
-model_uuid: m-a32576d8089a423581a8c883c10f6891
+model_id: m-34c92cd96fa74bf596d58274130b2ba2
+model_size_bytes: 10534018
+model_uuid: m-34c92cd96fa74bf596d58274130b2ba2
 prompts: null
-run_id: b9a6dee28c1b498c94d2257c632d53e0
+run_id: 83b22e8a850041c1b36cc09391edda43
 saved_input_example_info:
   artifact_path: input_example.json
   serving_input_path: serving_input_example.json
@@ -30,4 +30,4 @@ signature:
   outputs: '[{"type": "tensor", "tensor-spec": {"dtype": "int64", "shape": [-1]}}]'
   params: null
 type_hint_from_example: false
-utc_time_created: '2026-02-23 23:39:10.307015'
+utc_time_created: '2026-02-24 17:19:17.799987'

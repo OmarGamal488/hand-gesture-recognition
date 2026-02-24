@@ -168,13 +168,18 @@ def register_models(
         mv = mlflow.register_model(model_uri=model_uri, name=registered_model_name)
 
         f1 = results[model_name][metric_key]
+        clean_name = (
+            model_name.replace(' ', '_').replace('(', '').replace(')', '').replace('=', '')
+        )
         if model_name == best_model_name:
             alias = 'champion'
             champion_version = mv.version
         else:
-            alias = 'archived'
+            alias = f'{clean_name}_archived'
 
         client.set_registered_model_alias(registered_model_name, alias, mv.version)
+        client.set_model_version_tag(registered_model_name, mv.version, 'status',
+                                     'champion' if model_name == best_model_name else 'archived')
         client.update_model_version(
             name=registered_model_name,
             version=mv.version,
