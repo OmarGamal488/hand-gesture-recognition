@@ -1,5 +1,7 @@
 # Hand Gesture Studio
 
+> **Omar Gamal ElKady** · ITI AI Track, Intake 46 · *Machine Learning 1 — Final Project*
+
 [![CI](https://github.com/OmarGamal488/hand-gesture-recognition/actions/workflows/ci.yml/badge.svg)](https://github.com/OmarGamal488/hand-gesture-recognition/actions/workflows/ci.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
 [![uv](https://img.shields.io/badge/managed%20by-uv-DE5FE9.svg?logo=python)](https://github.com/astral-sh/uv)
@@ -441,3 +443,13 @@ Hand_Gesture/
 │
 └── .github/workflows/ci.yml            # Lint + tests on every push
 ```
+
+---
+
+## About
+
+**Author:** Omar Gamal ElKady
+**Program:** ITI · AI Track · Intake 46
+**Course:** Machine Learning 1 — final project
+
+[![GitHub](https://img.shields.io/badge/GitHub-OmarGamal488-181717.svg?logo=github&logoColor=white)](https://github.com/OmarGamal488)
