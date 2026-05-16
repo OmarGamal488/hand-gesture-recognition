@@ -1,0 +1,15 @@
+.venv
+__pycache__
+*.pyc
+.git
+.github
+notebooks/
+tests/
+docs/
+outputs/
+data/
+*.webm
+*.zip
+.run
+.pytest_cache
+.ruff_cache

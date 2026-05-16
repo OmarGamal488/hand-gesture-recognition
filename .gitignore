@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Claude Code
+.claude/
+
+# Data / models / outputs (auto-generated or large)
+data/*.csv
+models/*.pkl
+models/*.task
+outputs/
+
+# Demo video — hosted on GitHub CDN via README, no need to commit the 47MB file
+Hand-Gesture.webm
+OmarGamal_MachineLearning_1_Project.webm
+
+# Runtime artifacts
+.run/
+.pytest_cache/
+.ruff_cache/
+
+# Keep directory structure for gitignored folders
+!data/.gitkeep
+!models/.gitkeep
+!outputs/.gitkeep

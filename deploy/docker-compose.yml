@@ -1,0 +1,36 @@
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: hand-gesture:latest
+    container_name: hand-gesture-api
+    command: ["api"]
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  ui:
+    image: hand-gesture:latest
+    container_name: hand-gesture-ui
+    command: ["ui"]
+    ports:
+      - "7860:7860"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  mlflow:
+    image: hand-gesture:latest
+    container_name: hand-gesture-mlflow
+    command: ["mlflow"]
+    ports:
+      - "5000:5000"
+    volumes:
+      - ../outputs:/app/outputs
+    restart: unless-stopped
