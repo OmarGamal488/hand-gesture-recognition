@@ -1,8 +1,22 @@
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import pytest
 
-from inference import (
+# The model + dataset are gitignored (large binaries), so CI won't have them.
+# Skip the whole module gracefully when running against a fresh checkout.
+_ROOT = Path(__file__).resolve().parents[1]
+_MODEL = _ROOT / "models" / "best_gesture_model.pkl"
+_DATA = _ROOT / "data" / "hand_landmarks_data.csv"
+_missing = [p for p in (_MODEL, _DATA) if not p.exists()]
+if _missing:
+    pytest.skip(
+        f"trained artifacts not in this checkout: {[str(p.relative_to(_ROOT)) for p in _missing]}",
+        allow_module_level=True,
+    )
+
+from inference import (  # noqa: E402
     DEFAULT_CONFIDENCE_THRESHOLD,
     UNKNOWN_LABEL,
     get_model,

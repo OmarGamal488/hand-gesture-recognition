@@ -23,8 +23,6 @@ as a polished webcam app, a REST API, an MLflow registry, and a Docker stack.
 
 https://github.com/user-attachments/assets/06d56ee9-b05d-4df8-9136-c33817c9e376
 
-![Demo screenshot](docs/readme_imgs/demo_hero.png)
-
 ---
 
 ## Highlights

@@ -1,8 +1,20 @@
+from pathlib import Path
+
 import pandas as pd
 import pytest
 from fastapi.testclient import TestClient
 
-from api.main import app
+_ROOT = Path(__file__).resolve().parents[1]
+_MODEL = _ROOT / "models" / "best_gesture_model.pkl"
+_DATA = _ROOT / "data" / "hand_landmarks_data.csv"
+_missing = [p for p in (_MODEL, _DATA) if not p.exists()]
+if _missing:
+    pytest.skip(
+        f"trained artifacts not in this checkout: {[str(p.relative_to(_ROOT)) for p in _missing]}",
+        allow_module_level=True,
+    )
+
+from api.main import app  # noqa: E402
 
 
 @pytest.fixture(scope="module")
